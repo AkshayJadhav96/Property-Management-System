@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Agent Dashboard{% endblock %}
+
+{% block content %}
+  <h2>Welcome Agent {{ name }}</h2>
+
+  <h3>Your Listed Properties</h3>
+  {% if properties %}
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Address</th>
+        <th>Property Status</th>
+        <th>Lease Status</th>
+        <th>Rental Requests</th>
+      </tr>
+      {% for prop in properties %}
+        <tr>
+          <td>{{ prop[0] }}</td>
+          <td>{{ prop[1] }}</td>
+          <td>{{ prop[2] }}</td>
+          <td>{{ prop[3] }}</td>
+          <td>{{ prop[4] }}</td>
+          <td>{{ prop[5] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No properties listed yet.</p>
+  {% endif %}
+
+  <h3>Rental Requests</h3>
+  {% if rental_requests %}
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>Request ID</th>
+        <th>Tenant Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Property</th>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+      {% for req in rental_requests %}
+        <tr>
+          <td>{{ req[0] }}</td>
+          <td>{{ req[3] }}</td>
+          <td>{{ req[4] }}</td>
+          <td>{{ req[5] }}</td>
+          <td>{{ req[6] }}</td>
+          <td>{{ req[1] }}</td>
+          <td>{{ req[2] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No rental requests yet.</p>
+  {% endif %}
+
+  <h3>Add New Property</h3>
+  <form method="POST">
+    <label>Title:</label><br>
+    <input type="text" name="title" required><br>
+
+    <label for="property_type">Property Type:</label><br>
+    <select name="property_type" id="property_type" required>
+      <option value="">-- Select Property Type --</option>
+      <option value="Apartment">Apartment</option>
+      <option value="Studio">Studio</option>
+      <option value="Villa">Villa</option>
+      <option value="Commercial">Commercial</option>
+      <option value="Plot">Plot</option>
+      <option value="Warehouse">Warehouse</option>
+    </select><br>
+
+    <label>Size (sq ft):</label><br>
+    <input type="number" name="size" required><br>
+
+    <label>Address:</label><br>
+    <input type="text" name="address" required><br>
+    
+    <label>Price (₹):</label><br>
+    <input type="number" name="price" required><br>
+
+    <label>Description:</label><br>
+    <textarea name="description" rows="3"></textarea><br>
+
+    <label>Owner:</label><br>
+    <select name="owner_id" required>
+      <option value="">-- Select Owner --</option>
+      {% for owner in owners %}
+        <option value="{{ owner[1] }}">{{ owner[2] }}</option>
+      {% endfor %}
+    </select><br>
+
+
+    <button type="submit">Add Property</button>
+  </form>
+{% endblock %}

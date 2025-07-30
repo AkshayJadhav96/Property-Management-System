@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+  <h2>👋 Welcome Admin {{ name }}</h2>
+
+  <h3>All Users</h3>
+  {% if users %}
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      {% for user in users %}
+        <tr>
+          <td>{{ user[0] }}</td>
+          <td>{{ user[1] }}</td>
+          <td>{{ user[2] }}</td>
+          <td>{{ user[3] }}</td>
+          <td>
+            {% if user[4] %}
+                ✅ Active
+            {% else %}
+                ❌ Inactive
+            {% endif %}
+          </td>
+          <td>
+            {% if user[4] and user[3] != 'admin' %}
+                <form method="POST" action="{{ url_for('deactivate_user', user_id=user[0]) }}">
+                <button type="submit">Deactivate</button>
+                </form>
+            {% else %}
+                —
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No users found.</p>
+  {% endif %}
+
+  <h3>All Properties</h3>
+  {% if properties %}
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Address</th>
+        <th>Description</th>
+        <th>Size (sq ft)</th>
+        <th>Agent Name</th>
+        <th>Status</th>
+        <th>Price (₹)</th>
+      </tr>
+      {% for prop in properties %}
+        <tr>
+          <td>{{ prop[0] }}</td>
+          <td>{{ prop[1] }}</td>
+          <td>{{ prop[2] }}</td>
+          <td>{{ prop[3] }}</td>
+          <td>{{ prop[4] }}</td>
+          <td>{{ prop[5] }}</td>
+          <td>{{ prop[6] }}</td>
+          <td>{{ prop[7] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No properties listed.</p>
+  {% endif %}
+{% endblock %}
