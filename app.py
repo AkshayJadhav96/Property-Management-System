@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from db import initialize_connection_pool
-from queries.users import register_user, register_agent, get_user_by_username, get_active_lease_for_tenant, get_rental_requests_for_tenant, get_tenant_id_by_userid, get_available_properties, get_owner_active_leases,get_owner_properties, get_owner_id_by_userid
+from queries.users import register_user, register_agent, get_user_by_username, get_active_lease_for_tenant, get_rental_requests_for_tenant, get_tenant_id_by_userid, get_available_properties, get_owner_active_leases,get_owner_properties, get_owner_id_by_userid, get_user_statistics, get_property_summary, get_lease_summary,get_rental_requests_summary, get_agent_id_by_userid,get_agent_properties, get_agent_active_leases, get_agent_rental_requests, get_owner_list, save_property
 import os
 
 app = Flask(__name__)
@@ -49,9 +49,9 @@ def register():
 # Admin registers Agent
 # -------------------------
 @app.route('/admin/agent', methods=['GET', 'POST'])
-def register_agent():
+def agent_registration():
     if 'role' not in session or session['role'] != 'admin':
-        flash("⛔ Only admin can register agents.")
+        flash("⛔ Only admin can register agents.","warning")
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -63,12 +63,14 @@ def register_agent():
 
         user_id = register_agent(name, username, email, phone, password)
         if user_id:
-            flash("✅ Agent registered successfully.")
-            return redirect(url_for('admin_dashboard'))
+            flash("Agent registered successfully.","success")
+            return redirect(url_for('dashboard_admin'))
         else:
-            flash("❌ Failed to register agent.")
-
-    return render_template('register_agent.html')  # Separate template
+            flash("Failed to register agent.","error")
+        return render_template('register_agent.html')  # Separate template
+    
+        # Always return template for GET requests and failed POSTs
+    return render_template('register_agent.html')
 
 # -------------------------
 # Login Route
@@ -146,11 +148,99 @@ def dashboard_owner():
 
 @app.route('/dashboard_agent')
 def dashboard_agent():
-    return render_template('dashboard_agent.html')
+    # Get agent_id from the logged-in session
+    if 'user_id' not in session or session.get('role') != 'agent':
+        return redirect('/login')
 
-@app.route('/dashboard_admin')
+    agent_id = get_agent_id_by_userid(session.get("user_id"))
+    
+    if not agent_id:
+        return redirect(url_for("login"))
+
+    # Fetch agent-specific data
+    properties = get_agent_properties(agent_id)
+    active_leases = get_agent_active_leases(agent_id)
+    rental_requests = get_agent_rental_requests(agent_id)
+    owners_list = get_owner_list()
+    print(properties)
+    print(active_leases)
+    print(rental_requests)
+    print(owners_list)
+
+    return render_template(
+        'dashboard_agent.html',
+        properties=properties,
+        active_leases=active_leases,
+        rental_requests=rental_requests,
+        owners = owners_list
+    )
+
+@app.route('/agent/add-property', methods=['GET', 'POST'])
+def add_property():
+    if 'role' not in session or session['role'] != 'agent':
+        flash("⛔ Only agents can add properties.", "error")
+        return redirect(url_for('login'))
+
+    owners = get_owner_list()  # Your DB function to fetch owners
+    print(owners)
+    if request.method == 'POST':
+        title = request.form['title']
+        property_type = request.form['property_type']
+        size = request.form['size']
+        address = request.form['address']
+        price = request.form['price']
+        description = request.form['description']
+        owner_id = request.form['owner_id']
+        print("owner_id",owner_id)
+
+        success = save_property(title, property_type, size, address, price, description, owner_id)
+        if success:
+            flash("✅ Property added successfully!", "success")
+        else:
+            flash("❌ Failed to add property.", "error")
+        return redirect(url_for('dashboard_agent'))
+
+    return render_template('add_property.html', owners=owners)
+
+
+@app.route('/dashboard_admin',methods = ['GET','POST'])
 def dashboard_admin():
-    return render_template('dashboard_admin.html')
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        phone = request.form.get('phone')
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        try:
+            # Call your DB function to register agent
+            register_agent(name, username, email, phone, password)
+            flash('Agent registered successfully!', 'success')
+            return redirect(url_for('dashboard_admin'))
+        except Exception as e:
+            flash(f'Error registering agent: {e}', 'danger')
+        
+        return render_template('dashboard_admin.html')
+
+    # Fetch data from the views
+    user_stats = get_user_statistics()
+    property_summary = get_property_summary()
+    lease_summary = get_lease_summary()
+    rental_requests = get_rental_requests_summary()
+    print(user_stats)
+    print(property_summary)
+    print(lease_summary)
+    print(rental_requests)
+    return render_template(
+        'dashboard_admin.html',
+        user_stats=user_stats,
+        property_summary=property_summary,
+        lease_summary=lease_summary,
+        rental_requests=rental_requests
+    )
 
 # -------------------------
 # Run

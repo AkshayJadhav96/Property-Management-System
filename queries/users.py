@@ -86,3 +86,54 @@ def get_owner_active_leases(owner_id):
     """
     res = execute_query(query,(owner_id,))
     return res
+
+def get_user_statistics():
+    query = """
+        SELECT * FROM user_statistics_view;
+    """
+    return execute_query(query)
+
+def get_property_summary():
+    query = """
+        SELECT * FROM property_summary_view;
+    """
+    return execute_query(query)
+
+def get_lease_summary():
+    query = """
+        SELECT * FROM lease_summary_view;
+    """
+    return execute_query(query)
+
+def get_rental_requests_summary():
+    query = """
+        SELECT * FROM rental_requests_summary_view;
+    """
+    return execute_query(query)
+
+def get_agent_id_by_userid(user_id):
+    query = """
+        select agent_id from agents where user_id = %s
+    """
+    res =  execute_query(query, (user_id,))
+    return res[0][0] if res else None
+
+def get_agent_properties(agent_id):
+    query = "SELECT * FROM get_agent_properties(%s);"
+    return execute_query(query, (agent_id,))
+
+def get_agent_active_leases(agent_id):
+    query = "SELECT * FROM get_agent_active_leases(%s);"
+    return execute_query(query, (agent_id,))
+
+def get_agent_rental_requests(agent_id):
+    query = "SELECT * FROM get_agent_rental_requests(%s);"
+    return execute_query(query, (agent_id,))
+
+def get_owner_list():
+    query = "SELECT * FROM VIEW_OWNERS"
+    return execute_query(query)
+
+def save_property(title, property_type, size, address, price, description, owner_id):
+    query = ""
+    return execute_query(query)

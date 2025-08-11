@@ -2,75 +2,130 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-  <h2>👋 Welcome Admin {{ name }}</h2>
+<div class="container mx-auto p-4 md:p-8 max-w-7xl font-sans min-h-screen bg-gray-50">
+    
+    <header class="mb-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mr-3 text-indigo-600">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+            </svg>
+            Admin Dashboard
+        </h1>
+        <p class="text-lg text-gray-500 mt-2 ml-11">Welcome back, <span class="font-semibold text-gray-700">{{ session.username }}</span>!</p>
+    </header>
 
-  <h3>All Users</h3>
-  {% if users %}
-    <table border="1" cellpadding="6">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-      {% for user in users %}
-        <tr>
-          <td>{{ user[0] }}</td>
-          <td>{{ user[1] }}</td>
-          <td>{{ user[2] }}</td>
-          <td>{{ user[3] }}</td>
-          <td>
-            {% if user[4] %}
-                ✅ Active
-            {% else %}
-                ❌ Inactive
-            {% endif %}
-          </td>
-          <td>
-            {% if user[4] and user[3] != 'admin' %}
-                <form method="POST" action="{{ url_for('deactivate_user', user_id=user[0]) }}">
-                <button type="submit">Deactivate</button>
-                </form>
-            {% else %}
-                —
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-  {% else %}
-    <p>No users found.</p>
-  {% endif %}
+    <div class="p-5 m-2">
+    <a href="{{ url_for('agent_registration') }}"
+       class="inline-block bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg shadow-md hover:bg-orange-600 hover:shadow-lg transition duration-200 ease-in-out">
+        Register New Agent
+    </a>
+    </div>
 
-  <h3>All Properties</h3>
-  {% if properties %}
-    <table border="1" cellpadding="6">
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Address</th>
-        <th>Description</th>
-        <th>Size (sq ft)</th>
-        <th>Agent Name</th>
-        <th>Status</th>
-        <th>Price (₹)</th>
-      </tr>
-      {% for prop in properties %}
-        <tr>
-          <td>{{ prop[0] }}</td>
-          <td>{{ prop[1] }}</td>
-          <td>{{ prop[2] }}</td>
-          <td>{{ prop[3] }}</td>
-          <td>{{ prop[4] }}</td>
-          <td>{{ prop[5] }}</td>
-          <td>{{ prop[6] }}</td>
-          <td>{{ prop[7] }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-  {% else %}
-    <p>No properties listed.</p>
-  {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-blue-500">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+                Platform Statistics
+            </h3>
+            {% if user_stats %}
+                <ul class="space-y-3 text-gray-600">
+                    {% for stat in user_stats %}
+                        <li class="flex justify-between items-center text-md">
+                            <span>{{ stat[0] | capitalize }}</span>
+                            <span class="font-bold text-lg text-blue-600">{{ stat[1] }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-400 italic text-center py-4">No user statistics available.</p>
+            {% endif %}
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-green-500">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5A2.25 2.25 0 0021 18.75V8.25A2.25 2.25 0 0018.75 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h4.5m0 0V6.125A2.25 2.25 0 0112 3.875f.75 0 1.48.312 2 .875m-6.75 0h.008v.008H9.75V6.125zm2.25 0h.008v.008H12V6.125zm2.25 0h.008v.008H14.25V6.125z" /></svg>
+                Property Summary
+            </h3>
+            {% if property_summary %}
+                <ul class="space-y-3 text-gray-600">
+                    {% for prop in property_summary %}
+                        <li class="flex justify-between items-center text-md">
+                            <span>{{ prop[0] | replace('_', ' ') | capitalize }}</span>
+                            <span class="font-bold text-lg text-green-600">{{ prop[1] }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                 <p class="text-gray-400 italic text-center py-4">No property data available.</p>
+            {% endif %}
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-l-4 border-purple-500">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3 text-purple-500"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                Lease Summary
+            </h3>
+            {% if lease_summary %}
+                <ul class="space-y-3 text-gray-600">
+                    {% for lease in lease_summary %}
+                        <li class="text-md">
+                            <div>
+                                <span>{{ lease[0] | capitalize }} Leases: </span>
+                                <span class="font-bold text-lg text-purple-600">{{ lease[1] }}</span>
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                Total Rent: {{ lease[2] | float | round(2) }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                 <p class="text-gray-400 italic text-center py-4">No lease data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-12">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 mr-3 text-gray-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            Pending Rental Requests
+        </h3>
+        <div class="bg-white rounded-lg shadow-md overflow-x-auto">
+            {% if rental_requests %}
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending Requests</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for req in rental_requests %}
+                            <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ req[0] }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                        {{ req[1] }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">All caught up!</h3>
+                    <p class="mt-1 text-sm text-gray-500">There are no pending rental requests.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Add Property{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8">
+
+  <h2 class="text-xl font-semibold text-gray-700 mb-4">List A Property</h2>
+  <form method="POST" class="space-y-4">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Title</label>
+      <input type="text" name="title" required 
+             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Property Type</label>
+      <select name="property_type" id="property_type" required 
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <option value="">Select Property Type</option>
+        <option value="Apartment">Apartment</option>
+        <option value="Studio">Studio</option>
+        <option value="Villa">Villa</option>
+        <option value="Commercial">Commercial</option>
+        <option value="Plot">Plot</option>
+        <option value="Warehouse">Warehouse</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Size (sq ft)</label>
+      <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" placeholder="e.g., 2500.75" name="size" required 
+             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Address</label>
+      <input type="text" name="address" required 
+             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Price (₹)</label>
+      <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" placeholder="e.g., 2500.75" name="price" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Description</label>
+      <textarea name="description" rows="3" 
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-600">Owner</label>
+      <select name="owner_id" required 
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <option value="">Select Owner</option>
+        {% for owner in owners %}
+          <option value="{{ owner[2] }}">{{ owner.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="pt-4">
+      <button type="submit" 
+              class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+        Add Property
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+
