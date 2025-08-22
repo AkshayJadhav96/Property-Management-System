@@ -137,3 +137,21 @@ def get_owner_list():
 def save_property(title, property_type, size, address, price, description, owner_id):
     query = ""
     return execute_query(query)
+
+# # # # # # #
+
+def set_agent_designation_salary(agent_id,salary):
+    query = "select update_agent_details(%s,%s)"
+    return execute_query(query,(agent_id,salary))
+
+def insert_rental_request(tenant_id,property_id,agent_id,status,start_date,end_date):
+    query = """
+        INSERT INTO rental_requests(tenant_id, property_id, request_status, request_date, start_date, end_date)
+        VALUES (%s, %s, %s, NOW(), %s, %s)
+        """
+    execute_query(
+        query,
+        (tenant_id, property_id, "pending", start_date, end_date)
+    )
+
+# # # # # # # # # #

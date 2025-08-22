@@ -88,20 +88,40 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
-        {% for req in rental_requests %}
-          <tr>
-            <td class="px-4 py-2">{{ req.tenant_name }}</td>
-            <td class="px-4 py-2">{{ req.property_title }}</td>
-            <td class="px-4 py-2">{{ req.request_status }}</td>
-          </tr>
-        {% else %}
-          <tr>
-            <td colspan="3" class="px-4 py-2 text-gray-500">No rental requests found.</td>
-          </tr>
-        {% endfor %}
+<!-- # # # # # #  # -->
+      {% for req in rental_requests %}
+        <tr>
+          <td class="px-4 py-2">{{ req.tenant_name }}</td>
+          <td class="px-4 py-2">{{ req.property_title }}</td>
+          <td class="px-4 py-2">
+            {% if req.request_status == 'pending' %}
+              <form method="POST" action="{{ url_for('handle_rental_request', request_id=req.request_id, action='accept') }}" style="display:inline;">
+                <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                  Accept
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('handle_rental_request', request_id=req.request_id, action='reject') }}" style="display:inline;">
+                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Reject
+                </button>
+              </form>
+            {% else %}
+              <span class="px-3 py-1 rounded {{ 'bg-green-100 text-green-700' if req.request_status=='accepted' else 'bg-red-100 text-red-700' }}">
+                {{ req.request_status|capitalize }}
+              </span>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="3" class="px-4 py-2 text-gray-500">No rental requests found.</td>
+        </tr>
+      {% endfor %}
       </tbody>
     </table>
   </div>
 
 </div>
 {% endblock %}
+
+<!-- # # # # # # # #  -->

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from db import initialize_connection_pool
-from queries.users import register_user, register_agent, get_user_by_username, get_active_lease_for_tenant, get_rental_requests_for_tenant, get_tenant_id_by_userid, get_available_properties, get_owner_active_leases,get_owner_properties, get_owner_id_by_userid, get_user_statistics, get_property_summary, get_lease_summary,get_rental_requests_summary, get_agent_id_by_userid,get_agent_properties, get_agent_active_leases, get_agent_rental_requests, get_owner_list, save_property
+from queries.users import register_user, register_agent, get_user_by_username, get_active_lease_for_tenant, get_rental_requests_for_tenant, get_tenant_id_by_userid, get_available_properties, get_owner_active_leases,get_owner_properties, get_owner_id_by_userid, get_user_statistics, get_property_summary, get_lease_summary,get_rental_requests_summary, get_agent_id_by_userid,get_agent_properties, get_agent_active_leases, get_agent_rental_requests, get_owner_list, save_property, set_agent_designation_salary
 import os
 
 app = Flask(__name__)
@@ -60,9 +60,12 @@ def agent_registration():
         username = request.form['username']
         phone = request.form['phone']
         password = request.form['password']
+        salary = request.form['salary']
 
         user_id = register_agent(name, username, email, phone, password)
         if user_id:
+            agent_id = get_agent_id_by_userid(user_id)
+            set_agent_designation_salary(agent_id,salary)
             flash("Agent registered successfully.","success")
             return redirect(url_for('dashboard_admin'))
         else:
@@ -123,13 +126,35 @@ def dashboard_tenant():
     rental_requests = get_rental_requests_for_tenant(tenant_id)
     # print(rental_requests)
     available_properties = get_available_properties()
-    # print(available_properties)
+    print(available_properties)
     return render_template(
         'dashboard_tenant.html',
         leases=active_lease,
         requests=rental_requests,
         properties = available_properties
     )
+
+# # # # # # #
+
+@app.route('/request_rental/<int:property_id>', methods=['POST'])
+def request_rental(property_id):
+    if session.get("role") != "tenant":
+        flash("Only tenants can request rentals.", "danger")
+        return redirect(url_for("tenant_dashboard"))
+
+    tenant_id = session.get("user_id")  # tenant id from session
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    if not start_date or not end_date:
+        flash("Please provide both start and end dates.", "warning")
+        return redirect(url_for("tenant_dashboard"))
+    
+
+    flash("Rental request submitted successfully!", "success")
+    return redirect(url_for("tenant_dashboard"))
+
+# # # # # # # # # #
 
 @app.route('/dashboard_owner')
 def dashboard_owner():
@@ -141,9 +166,9 @@ def dashboard_owner():
     # Fetch data using stored functions
     properties = get_owner_properties(owner_id)
     leases = get_owner_active_leases(owner_id)
-    print(properties)
-    print(leases)
-    print(owner_id,session['user_id'])
+    # print(properties)
+    # print(leases)
+    # print(owner_id,session['user_id'])
     return render_template('dashboard_owner.html', properties=properties, leases=leases)
 
 @app.route('/dashboard_agent')
@@ -162,10 +187,10 @@ def dashboard_agent():
     active_leases = get_agent_active_leases(agent_id)
     rental_requests = get_agent_rental_requests(agent_id)
     owners_list = get_owner_list()
-    print(properties)
-    print(active_leases)
-    print(rental_requests)
-    print(owners_list)
+    # print(properties)
+    # print(active_leases)
+    # print(rental_requests)
+    # print(owners_list)
 
     return render_template(
         'dashboard_agent.html',
@@ -182,7 +207,7 @@ def add_property():
         return redirect(url_for('login'))
 
     owners = get_owner_list()  # Your DB function to fetch owners
-    print(owners)
+    # print(owners)
     if request.method == 'POST':
         title = request.form['title']
         property_type = request.form['property_type']
@@ -230,10 +255,10 @@ def dashboard_admin():
     property_summary = get_property_summary()
     lease_summary = get_lease_summary()
     rental_requests = get_rental_requests_summary()
-    print(user_stats)
-    print(property_summary)
-    print(lease_summary)
-    print(rental_requests)
+    # print(user_stats)
+    # print(property_summary)
+    # print(lease_summary)
+    # print(rental_requests)
     return render_template(
         'dashboard_admin.html',
         user_stats=user_stats,
