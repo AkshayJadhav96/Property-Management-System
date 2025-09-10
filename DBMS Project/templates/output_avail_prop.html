@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Available Properties
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Available Properties</h1>
+    <div class="mt-3">
+        {% if properties %}
+            <div class="row">
+                {% for _, property in properties.items() %}
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ property.address }}</h5>
+                                <p class="card-text"><strong>Property ID:</strong> {{ property.property_id }}</p>
+                                <p class="card-text"><strong>Size:</strong> {{ property.size }}</p>
+                                <p class="card-text"><strong>Type:</strong> {{ property.type }}</p>
+                                <p class="card-text"><strong>Market Value:</strong> {{ property.market_value }}</p>
+                                <p class="card-text"><strong>Landlord Name:</strong> {{ property.LandLord_Name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">No available properties found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}

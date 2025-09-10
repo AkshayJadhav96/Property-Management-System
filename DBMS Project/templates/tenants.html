@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Review
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Create Review</h1>
+    <br>
+
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+
+    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+        {{message}}
+
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+    <form action="/tenants" method="POST" id="createReviewForm">
+        <div class="form-group">
+            <label for="tenantId">Tenant ID:</label>
+            <input type="number" class="form-control" id="tenantId" name="tenantId" required>
+        </div>
+        <div class="form-group">
+            <label for="propertyId">Property ID:</label>
+            <input type="number" class="form-control" id="propertyId" name="propertyId" required>
+        </div>
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <input type="number" class="form-control" id="rating" name="rating" required>
+        </div>
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Review</button>
+    </form>
+</div>
+{% endblock body %}

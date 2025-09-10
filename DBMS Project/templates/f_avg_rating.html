@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}
+Average Rating for Property
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Average Rating for Property</h1>
+    <form action="/average_rating" method="POST" id="averageRatingForm">
+        <div class="form-group">
+            <label for="propertyId">Property ID:</label>
+            <input type="text" class="form-control" id="propertyId" name="propertyId" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate Average Rating</button>
+    </form>
+
+    <div id="result" class="mt-3">
+        {% if avg_rating is defined %}
+            <p class="lead">Average Rating: {{ avg_rating }}/5</p>
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ avg_rating * 20 }}%" aria-valuenow="{{ avg_rating }}" aria-valuemin="0" aria-valuemax="5"></div>
+            </div>
+        {% endif %}
+        {% if error %}
+            <p class="text-danger">{{ error }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}

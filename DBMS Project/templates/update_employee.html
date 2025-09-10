@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+Update Employee
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Update Employee</h1>
+    <form action="{{ url_for('update_employee', company_id=company.company_id, employee_id=employee.employee_id) }}" method="POST" id="updateEmployeeForm">
+        <!-- Employee form fields go here -->
+        <!-- Make sure to prefill the form fields with the current details of the employee -->
+        <!-- For example: -->
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ employee.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" class="form-control" id="position" name="position" required>
+        </div>
+        <div class="form-group">
+            <label for="contactInformation">Contact Information:</label>
+            <input type="text" class="form-control" id="contactInformation" name="contactInformation" required>
+        </div>
+        <div class="form-group">
+            <label for="salary">Salary:</label>
+            <input type="text" class="form-control" id="salary" name="salary" required>
+        </div>
+        <div class="form-group">
+            <label for="department">Department:</label>
+            <input type="text" class="form-control" id="department" name="department" required>
+        </div>
+        <div class="form-group">
+            <label for="startDate">Employment Start Date:</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update Employee</button>
+    </form>
+</div>
+{% endblock body %}

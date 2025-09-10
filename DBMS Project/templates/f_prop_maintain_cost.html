@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Get Property Maintenance Cost
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Get Property Maintenance Cost</h1>
+    <form id="maintenanceCostForm">
+        <div class="form-group">
+            <label for="propertyId">Property ID:</label>
+            <input type="text" class="form-control" id="propertyId" name="propertyId" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate Maintenance Cost</button>
+    </form>
+
+    <div id="result" class="mt-3"></div>
+</div>
+
+<script>
+    document.getElementById('maintenanceCostForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const response = await fetch('/get_property_maintenance_cost', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        document.getElementById('result').innerHTML = `<p>Maintenance Cost: ${data.maintenance_cost}</p>`;
+    });
+</script>
+{% endblock body %}

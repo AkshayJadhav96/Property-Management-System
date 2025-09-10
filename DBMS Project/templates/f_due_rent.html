@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Calculate Total Rent Due
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-3">
+    <h1 class="text-center">Calculate Total Rent Due</h1>
+    <form action="/calculate_total_rent_due" method="POST" id="rentDueForm">
+        <div class="form-group">
+            <label for="tenantId">Tenant ID:</label>
+            <input type="text" class="form-control" id="tenantId" name="tenantId" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate Rent Due</button>
+    </form>
+
+    <div id="result" class="mt-3"></div>
+</div>
+<script>
+    document.getElementById('rentDueForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const response = await fetch('/calculate_total_rent_due', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        document.getElementById('result').innerHTML = `<p>Total Rent Due : ${data.total_rent_due}</p>`;
+    });
+</script>
+{% endblock body %}
